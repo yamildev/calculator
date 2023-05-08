@@ -2,59 +2,66 @@ let currentInnerText = ''
 let firstOperand = '';
 let secondOperand = '';
 let operator = '';
-let innerText = "";
+let innerText = ''
+let result = 0;
 
 const buttons = document.querySelectorAll('.buttons-grid')
 const previousOperationScreen = document.getElementById("previous-operation")
 const currentOperationScreen = document.getElementById("current-operation")
-// expresión regular para coincidir con números positivos o negativos, con decimales o no entre 0 y 9.
-const numberRegex = /^-?\d*\.?\d+$/;
 
 function clear(something) {
-  if (something === 'CLEAR')
+  if (something === 'CLEAR') {
     currentOperationScreen.innerText = ""
-  previousOperationScreen.innerText = ""
-
+    previousOperationScreen.innerText = ""
+    firstOperand = ''
+    seconOperand = ''
+    currentInnerText = ''
+  }
 }
-
-/*
-while (!firstOperand.includes(objToArr(operators))) {
-      firstOperand += displayValue
-    }
-*/
+// features[logic]: display, variable behavior
 buttons.forEach((button) => {
   button.addEventListener('click', e => {
+    
+
     //mostrar contenido en currentOperationScreen
     currentInnerText = e.target.innerText
     console.log('currentInnerText: ',currentInnerText)
+    //console.log('firstOperand: ', firstOperand) //debug
+    //console.log('secondOperand: ', secondOperand) //debug
+
+
     currentOperationScreen.textContent += currentInnerText
     console.log('currentOperationScreen: ', currentOperationScreen.textContent)
 
     //variables storing
     if (operators.includes(currentInnerText)) {
       operator = currentInnerText //stores the operator, si eligo un operador, guardalo 
-      console.log('operator: ', operator)     
+      console.log('operator: ', operator)  
 
-    } else if(operator == '') {
+    } else if (operator == '') {
 
       firstOperand += parseFloat(currentInnerText)
       console.log('firstOperand: ', firstOperand) 
       console.log('firstOperand type: ', typeof(firstOperand))     
-      
-    } else {
+
+    } else if (currentInnerText != '=') {
       secondOperand += parseFloat(currentInnerText)
       parseFloat(secondOperand)
       console.log('secondOperand: ', secondOperand)
       console.log('secondOperand type: ', typeof(secondOperand))     
-
     }
+
     //run operate()
     if (currentInnerText == '=') {
-      currentOperationScreen.textContent = operate(operator, parseFloat(firstOperand), parseFloat(secondOperand))
-      console.log(currentOperationScreen)
+      result = operate(operator, parseFloat(firstOperand), parseFloat(secondOperand))
+      console.log('result: ', result)
+      console.log('typeof(result): ', typeof(result))
+      
+      //console.log(currentOperationScreen)
     }
-    console.log('*****************************************************************************')
-    clear(currentInnerText);
+    console.log('*************************************') //debug
+    clear(currentInnerText); //clearAll function 
+
 
   })
 });
@@ -76,7 +83,7 @@ function operate(operator, a, b) {
   }
 }
 
-//          BASIC OPERATIONS
+//        BASIC OPERATIONS
 function add(a, b) {
   return a + b
 }
@@ -95,17 +102,3 @@ function divide(a, b) {
 
 const operators = ['÷','−','×','+']
 
-/*               codigo de validacion segun openAI
-    if (!isNaN(parseFloat(currentInnerText))) { //if currentInnerText is a number, do this:
-      if (inner === '') { //If an operator doesn't still selected
-        // if(currentInnerText === )
-        firstOperand += currentInnerText
-        console.log('firstOperand: ', firstOperand)
-        console.log('typeof', typeof (firstOperand))
-        //si innerText es igual a alguno de los valores del objeto,
-        //agregar el resultado a operator
-      } else {
-        secondOperand += currentInnerText
-      }
-    }
-*/
