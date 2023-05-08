@@ -1,5 +1,5 @@
 * {
-    font-size: 35px;
+    font-size: 30px;
 }
 
 html {
@@ -45,21 +45,24 @@ main .calculator {
 .buttons-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+    font-size: 35px;;
 }
 .buttons-grid .span2 {
     grid-column: span 2;
 }
 
 
-.previous-operation{
+#previous-operation{
     background-color: yellow;
     text-align: right;
-
+    overflow: auto;  
+    height: 35px;  
 }
-.current-operation{
+#current-operation{
     background-color: forestgreen;
     text-align: right;
-    
+    overflow: auto; 
+    height: 35px;   
 }
 
 
