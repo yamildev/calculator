@@ -6,62 +6,116 @@ let innerText = ''
 let result = 0;
 
 const buttons = document.querySelectorAll('.buttons-grid')
-const previousOperationScreen = document.getElementById("previous-operation")
 const currentOperationScreen = document.getElementById("current-operation")
+const previousOperationScreen = document.getElementById("previous-operation")
+const operators = ['÷', '−', '×', '+']
 
-function clear(something) {
-  if (something === 'CLEAR') {
-    currentOperationScreen.innerText = ""
-    previousOperationScreen.innerText = ""
-    firstOperand = ''
-    seconOperand = ''
-    currentInnerText = ''
-  }
+const buttonSwitch = {
+  enable: (selector, name) => {
+    if (selector === 'id') {
+      document.getElementById(name).disabled = false
+    } else if (selector === 'class') {
+
+      const buttons = document.getElementsByClassName(name);
+      for (let i = 0; i < buttons.length; i++) {
+        buttons[i].disabled = false;
+      }
+    }
+  },
+  disable: (selector, name) => {
+    if (selector === 'id') {
+      document.getElementById(name).disabled = true
+    } else if (selector === 'class') {
+
+      const buttons = document.getElementsByClassName(name);
+      for (let i = 0; i < buttons.length; i++) {
+        buttons[i].disabled = true;
+      }
+    }
+  },
 }
+
+buttonSwitch.disable('class', 'operators')
+buttonSwitch.disable('id', 'point')
+buttonSwitch.disable('id', 'equal')
+buttonSwitch.disable('id', 'clear')
+buttonSwitch.disable('id', 'delete')
+
+
 // features[logic]: display, variable behavior
 buttons.forEach((button) => {
   button.addEventListener('click', e => {
-    
 
-    //mostrar contenido en currentOperationScreen
-    currentInnerText = e.target.innerText
-    console.log('currentInnerText: ',currentInnerText)
-    //console.log('firstOperand: ', firstOperand) //debug
-    //console.log('secondOperand: ', secondOperand) //debug
+    currentInnerText = e.target.innerText  //display content on currentOperationScreen
+    currentClassName = e.target.classList
 
+    // #clear behavior
+    if (currentInnerText.length > 0) buttonSwitch.enable('id', 'clear')
+    if (currentInnerText === 'CLEAR') buttonSwitch.disable('id', 'clear')
 
-    currentOperationScreen.textContent += currentInnerText
-    console.log('currentOperationScreen: ', currentOperationScreen.textContent)
+    //while not result, display operations on previous-operation
+    if (currentInnerText != '=') previousOperationScreen.textContent += currentInnerText
 
     //variables storing
     if (operators.includes(currentInnerText)) {
-      operator = currentInnerText //stores the operator, si eligo un operador, guardalo 
-      console.log('operator: ', operator)  
+      operator = currentInnerText //stores an operator if chosen 
 
-    } else if (operator == '') {
+    } else if (operator == '') { //if operator wasn't chosen yet
+      firstOperand += (currentInnerText)
+      buttonSwitch.enable('class', 'operators')
+      buttonSwitch.enable('id', 'point')
 
-      firstOperand += parseFloat(currentInnerText)
-      console.log('firstOperand: ', firstOperand) 
-      console.log('firstOperand type: ', typeof(firstOperand))     
+      if (firstOperand.includes('.')) {
+        buttonSwitch.disable('id', 'point')
+      }
 
     } else if (currentInnerText != '=') {
-      secondOperand += parseFloat(currentInnerText)
-      parseFloat(secondOperand)
-      console.log('secondOperand: ', secondOperand)
-      console.log('secondOperand type: ', typeof(secondOperand))     
-    }
+      buttonSwitch.disable('class', 'operators')
+      secondOperand += (currentInnerText)
 
-    //run operate()
-    if (currentInnerText == '=') {
-      result = operate(operator, parseFloat(firstOperand), parseFloat(secondOperand))
-      console.log('result: ', result)
-      console.log('typeof(result): ', typeof(result))
       
-      //console.log(currentOperationScreen)
-    }
-    console.log('*************************************') //debug
-    clear(currentInnerText); //clearAll function 
+      buttonSwitch.enable('id', 'equal')
+      buttonSwitch.enable('id', 'point')
+      
+      if (secondOperand.includes('.')) {
+        buttonSwitch.disable('id', 'point')
+      }
 
+    }
+
+    //DISPLAY RESULT... operate() will run
+    if (currentInnerText == '=') {
+      buttonSwitch.enable('class', 'operators')
+      
+      result = operate(operator, parseFloat(firstOperand), parseFloat(secondOperand))
+      currentOperationScreen.textContent = result
+    
+      clear()
+
+      //re-stores the variables for the next operation
+      firstOperand = result
+      secondOperand = ''
+      previousOperationScreen.textContent += firstOperand
+      buttonSwitch.disable('id', 'equal') // disable to prevent a dangerous bug
+
+    }
+
+    // DEBUG:
+    console.log('My little Debuge')
+    console.table(
+      {
+        currentInnerText,
+        currentClassName,
+        firstOperand,
+        secondOperand,
+        operator,
+        innerText,
+        result,
+      }
+    )
+
+    clearAll(currentInnerText); //clearAll function 
+    deleteChar(currentInnerText)
 
   })
 });
@@ -100,5 +154,32 @@ function divide(a, b) {
   return a / b
 }
 
-const operators = ['÷','−','×','+']
+function clearAll(characters) {
+  if (characters === 'CLEAR') {
+    previousOperationScreen.textContent = '';
+    window.location.reload(false);
+  }
+}
+function clear () {
+ // currentOperationScreen.innerText = ""
+  previousOperationScreen.innerText = ""
+  firstOperand = ''
+  secondOperand = ''
+  currentInnerText = ''
+}
 
+function deleteChar(characters) {
+  if (characters === 'DELETE') {
+    //delete secondOperand characters until 0
+
+
+    //delete operator until 0
+    //delete firstOperand characters until 0
+  }
+}
+
+
+
+// una vez haya result
+// bloquear punto
+// if click number = clear ()
