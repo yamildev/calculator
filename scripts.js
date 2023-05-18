@@ -41,7 +41,7 @@ buttonSwitch.disable('id', 'equal')
 buttonSwitch.disable('id', 'clear')
 buttonSwitch.disable('id', 'delete')
 
-
+ 
 // features[logic]: display, variable behavior
 buttons.forEach((button) => {
   button.addEventListener('click', e => {
